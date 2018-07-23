@@ -1,0 +1,25 @@
+html {
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+h2 {
+  margin: auto;
+  width: 100%;
+  border: 3px solid #00bcd4;
+  background-color: #00bcd4;
+  padding: 13px;
+  text-align: center;
+  color: #ffffff;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Didact Gothic', sans-serif;
+  color: #c0c0c0;
+  background-color: #ffffff;
+}
