@@ -25,6 +25,7 @@ class Register extends React.Component {
         console.log('Received values of form: ', values);
         console.log('Hello, my name is: ', values.name);
         console.log('I am working in ', values.company);
+        const props = this.props
 
         axios.post('/signup', {
           username: values.email,
@@ -37,7 +38,8 @@ class Register extends React.Component {
           alert("Success to insert data to database");
           console.log("Response is:");
           console.log(response);
-          
+          props.history.push("/reg")
+
         })
         .catch(function (error) {
           console.log(error);
