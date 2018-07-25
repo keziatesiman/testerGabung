@@ -18,6 +18,8 @@ import Loginscreen from './Loginscreen';
 import Home from './App2'
 import Roster from './Roster'
 import Schedule from './Schedule'
+import Register from './Register'
+import Reg from './Reg'
 
 import './App.css';
 
@@ -36,6 +38,8 @@ class App extends Component {
             <Route exact path='/home' component={Home}/>
             <Route path='/roster' component={Roster}/>
             <Route path='/schedule' component={Schedule}/>
+            <Route path='/reg' component={Reg}/>
+            <Route path='/register' component={Register}/>
         </Switch>
       </div>
     );

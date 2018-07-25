@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import 'antd/dist/antd.css';
+import axios from 'axios';
 
 import { Form, Input, Tooltip, Icon, Cascader, Select, Row, Col, Checkbox, Button, AutoComplete } from 'antd';
 
@@ -11,7 +12,7 @@ const Option = Select.Option;
 const AutoCompleteOption = AutoComplete.Option;
 
 
-class RegistrationForm extends React.Component {
+class Register extends React.Component {
   state = {
     confirmDirty: false,
     autoCompleteResult: [],
@@ -22,6 +23,26 @@ class RegistrationForm extends React.Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
+        console.log('Hello, my name is: ', values.name);
+        console.log('I am working in ', values.company);
+
+        axios.post('/signup', {
+          username: values.email,
+          name : values.name,
+          phone: values.phone,
+          current_company: values.company,
+          division : values.division
+        })
+        .then(function (response) {
+          alert("Success to insert data to database");
+          console.log("Response is:");
+          console.log(response);
+          
+        })
+        .catch(function (error) {
+          console.log(error);
+          alert("Error");
+        });
       }
     });
   }
@@ -228,7 +249,7 @@ class RegistrationForm extends React.Component {
                 <Input />
               )}
             </Col>
-            <Col span={12}>
+            <Col span={8}>
               <Button>Get captcha</Button>
               
             </Col>
@@ -254,9 +275,6 @@ class RegistrationForm extends React.Component {
   }
 }
 
-const WrappedRegistrationForm = Form.create()(RegistrationForm);
+const Registers = Form.create()(Register);
 
-
-const Register = ReactDOM.render(<WrappedRegistrationForm />, document.getElementById('container')); 
-
-export default Register;
+export default Registers; 

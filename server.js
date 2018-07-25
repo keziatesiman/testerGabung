@@ -219,23 +219,22 @@ app.post('/signup', (req, res) => {
     var created_at = now.format('Y-m-d H:M:S');
     
     var hashedPass = bcrypt.hashSync(passw, saltRounds); 
-    console.log("Username", usern);
+    console.log("Username ", usern);
     console.log("Password", passw);
-    console.log("Hashed pass",hashedPass);
+    console.log("Hashed pass ",hashedPass);
     console.log("date time: ", created_at);
 
     var sql = "INSERT INTO user_data(username, password, name, phone, current_company, division, created_at) \
 	VALUES (?, ?, ?, ?, ?, ?, ?);";
     connection.query(sql, [usern, hashedPass, name, phone, current_company, division, created_at], (err, rows, fields) => {
-        if (!err) 
+        if (!err) {
             res.send(rows);
-            // rows.forEach(element => {
-            //     if(element.constructor == Array)
-            //     res.send(rows);
-            // });
-        else
+            console.log("Success \n");
+        }
+        else {
             console.log("error \n");
             console.log(err);
+        }
     })
 });
 
@@ -248,7 +247,7 @@ app.post('/authenticate', (req, res) => {
     //hash the password
     var hashedPass = bcrypt.hashSync(password, saltRounds); 
     console.log("Hashed password: ",hashedPass);   
-    const sql = 'SELECT * FROM user_data WHERE username = ?;'
+    const sql = 'SELECT * FROM user_data WHERE username = ?'
     connection.query(sql, [username], (err, result) => {
         if(result.length > 0) {
             // var hasil = bcrypt.compareSync(password, result[0].Password); 
@@ -258,20 +257,20 @@ app.post('/authenticate', (req, res) => {
 
             bcrypt.compare(password, dbpass, function(err, resp) {
                 if(resp) {
-                 // Passwords match
-                 console.log("match");
-                 var now = datetime.create();
-                 var last_login = now.format('Y-m-d H:M:S');
-
-                 const sqlUpdate = 'UPDATE user_data SET last_login = ? WHERE username = ?;'
-                 connection.query(sql, [last_login, username], (err, result) => {
-                    if (!err) {
-                        console.log(" updated last login at ", last_login);
-                    }
-                    else {
-                        console.log("error \n");
-                        console.log(err);
-                    }
+                    // Passwords match
+                    console.log("match");
+                    var now = datetime.create();
+                    var last_login = now.format('Y-m-d H:M:S');
+                    
+                    var sqlUpdate = "UPDATE user_data SET last_login = ? WHERE username = ?";
+                    connection.query(sqlUpdate, [last_login, username] ,(err, result) => {
+                        if (!err) {
+                            console.log('updated last login at ', last_login);
+                        }
+                        else {
+                            console.log("error \n");
+                            console.log(err);
+                        }
                  })
 
                  res.status(200).json({

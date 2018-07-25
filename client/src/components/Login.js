@@ -6,10 +6,10 @@ import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import App3 from './App3';
-//import Register from './Register';
-import uuid from 'uuid/v4'
-import { BrowserRouter as Router, withRouter } from 'react-router-dom'
-import { Redirect } from 'react-router'
+import Reg from './Reg';
+import uuid from 'uuid/v4';
+import { BrowserRouter as Router, withRouter, Link } from 'react-router-dom';
+import { Redirect } from 'react-router';
 import axios from 'axios';
 import { Button } from 'antd';
 
@@ -29,6 +29,7 @@ constructor(props){
   loginView: []
   }
   this.handleClick = this.handleClick.bind(this);
+
  }
 
  componentWillMount() {
@@ -58,7 +59,7 @@ constructor(props){
          <RaisedButton label="Submit" primary={true} style={style} onClick={(event) => this.handleClick(event)}/>
      </div>
      </MuiThemeProvider>
-     <Button type="primary" onClick={(event) => this.handleClick2()}>Sign Up</Button>
+     <Button type="primary"><Link to='/register'>Sign Up</Link></Button>
   </div>
    )
     this.setState({
@@ -66,9 +67,6 @@ constructor(props){
     })
  }
 
- handleClick2(){
-   this.props.history.push("/Register")
- }
  handleClick(event){
     var user= this.state.username;
     var pass= this.state.password;
