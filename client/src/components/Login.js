@@ -59,6 +59,8 @@ constructor(props){
          <RaisedButton label="Submit" primary={true} style={style} onClick={(event) => this.handleClick(event)}/>
      </div>
      </MuiThemeProvider>
+     <br/><br/>
+     <div>Don\'t have any account? Sign up now!</div><br/>
      <Button type="primary"><Link to='/register'>Sign Up</Link></Button>
   </div>
    )
