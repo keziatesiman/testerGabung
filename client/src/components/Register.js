@@ -3,6 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import 'antd/dist/antd.css';
 import axios from 'axios';
+import Recaptcha from 'react-recaptcha';
 
 import { Form, Input, Tooltip, Icon, Cascader, Select, Row, Col, Checkbox, Button, AutoComplete } from 'antd';
 
@@ -47,6 +48,10 @@ class Register extends React.Component {
         });
       }
     });
+  }
+
+  reCaptchaLoaded() {
+    console.log('Captcha success');
   }
 
   handleConfirmBlur = (e) => {
@@ -241,20 +246,22 @@ class Register extends React.Component {
         <FormItem
           {...formItemLayout}
           label="Captcha"
-          extra="We must make sure that your are a human."
         >
           <Row gutter={8}>
             <Col span={12}>
               {getFieldDecorator('captcha', {
-                rules: [{ required: true, message: 'Please input the captcha you got!' }],
+                rules: [{ required: true, message: 'Please check the captcha!' }],
               })(
-                <Input />
+                <Recaptcha
+                sitekey="6LcrSmUUAAAAAF6NBGQEBCSQOY7JrjBsP6Pd1EDI"
+                render="explicit"
+                onloadCallback={this.reCaptchaLoaded()}
+                />
+                
               )}
+            
             </Col>
-            <Col span={8}>
-              <Button>Get captcha</Button>
-              
-            </Col>
+
           </Row>
 
         </FormItem>

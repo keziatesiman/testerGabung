@@ -25,6 +25,8 @@
     "express": "^4.16.2",
     "mysql": "^2.15.0",
     "node-datetime": "^2.0.6",
-    "randomstring": "^1.1.5"
+    "randomstring": "^1.1.5",
+    "react-recaptcha": "^2.3.10",
+    "uuid": "^3.3.2"
   }
 }

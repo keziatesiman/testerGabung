@@ -12,7 +12,6 @@ import { Switch, Route, withRouter } from 'react-router-dom';
 
 
 import LoginScreen from './Loginscreen';
-//import App2 from './App2';
 import App3 from './App3';
 import Loginscreen from './Loginscreen';
 import Home from './App2'
