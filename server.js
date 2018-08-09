@@ -7,6 +7,7 @@ const randomstring = require("randomstring");
 const bodyparser = require('body-parser');
 const datetime = require('node-datetime');
 const uuidv4 = require('uuid/v4');
+const fs = require('fs');
 
 
 app.use(bodyparser.json());
@@ -30,6 +31,7 @@ connection.connect(function(error) {
     }
 });
 
+
 app.get('/api/customers', (req, res) => {
   const customers = [
     {id: 1, firstName: 'John', lastName: 'Doe'},
@@ -52,7 +54,7 @@ app.get('/name', function(req, resp) {
             console.log('successful query \n');
             console.log(rows); 
             //parse with your rows / fields
-            resp.send('Hello '+ rows[0].Name);
+            resp.send('Hello ', rows[0].Name);
         }
     });
 });
@@ -254,6 +256,44 @@ app.post('/signup', (req, res) => {
             console.log(err);
         }
     })
+});
+
+//Get user and put all those data on json file 
+app.get('/user', (req, res) => {
+    connection.query('SELECT * FROM user_data', (err, rows, fields) => {
+        if (!err) {
+            
+
+            var data_table = [];
+
+            for (var i in rows) {
+                var user_id = rows[i].id; 
+                var user_username =rows[i].username;
+                var user_name =rows[i].name;
+                var user_phone = rows[i].phone;
+                var user_current_company = rows[i].current_company;
+                var user_division = rows[i].division;
+
+                data_table.push({
+                    user_id :user_id,
+                    user_username : user_username,
+                    user_name :user_name,
+                    user_phone : user_phone,
+                    user_current_company: user_current_company,
+                    user_division : user_division
+                });
+                let data = JSON.stringify(data_table);
+                fs.writeFileSync('./client/src/components/student-2.json', data); 
+            }
+
+            res.send(data_table);
+        
+        }
+        else {
+            console.log(err);
+        }
+    })
+   
 });
 
 //Authenticate user data

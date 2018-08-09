@@ -19,6 +19,8 @@ import Roster from './Roster'
 import Schedule from './Schedule'
 import Register from './Register'
 import Reg from './Reg'
+import AppTable from './AppTable'
+import TableAntd from './TableAntd'
 
 import './App.css';
 
@@ -39,6 +41,8 @@ class App extends Component {
             <Route path='/schedule' component={Schedule}/>
             <Route path='/reg' component={Reg}/>
             <Route path='/register' component={Register}/>
+            <Route path='/AppTable' component={AppTable}/>
+            <Route path='/TableAntd' component={TableAntd}/>
         </Switch>
       </div>
     );

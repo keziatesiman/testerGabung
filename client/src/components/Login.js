@@ -12,6 +12,8 @@ import { BrowserRouter as Router, withRouter, Link } from 'react-router-dom';
 import { Redirect } from 'react-router';
 import axios from 'axios';
 import { Button } from 'antd';
+import jsonfile from 'jsonfile';
+import fs from 'fs';
 
 //https://stackoverflow.com/questions/42123261/programmatically-navigate-using-react-router-v4
 
@@ -70,6 +72,20 @@ constructor(props){
  }
 
  handleClick(event){
+    // axios.get('/user')
+    // .then(function (response) {
+    //   console.log('response');
+    //   console.log(response);
+    //   fs.writeFileSync('/tmp/data.json', response, function (err) {
+    //     console.error(err)
+    //   })
+      
+    // })
+    // .catch(function (error) {
+    //   console.log(error);
+    // });
+
+
     var user= this.state.username;
     var pass= this.state.password;
     const props = this.props 

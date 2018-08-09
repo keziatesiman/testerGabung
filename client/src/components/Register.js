@@ -17,6 +17,7 @@ class Register extends React.Component {
   state = {
     confirmDirty: false,
     autoCompleteResult: [],
+    isVerified :false
   };
 
   handleSubmit = (e) => {
@@ -53,6 +54,13 @@ class Register extends React.Component {
   reCaptchaLoaded() {
     console.log('Captcha success');
   }
+  verifyCallback(response) {
+    if (response){
+      this.setState ({
+        isVerified : true 
+      })
+    }
+  }
 
   handleConfirmBlur = (e) => {
     const value = e.target.value;
@@ -85,6 +93,7 @@ class Register extends React.Component {
     }
     this.setState({ autoCompleteResult });
   }
+
 
   render() {
     const { getFieldDecorator } = this.props.form;
@@ -249,13 +258,12 @@ class Register extends React.Component {
         >
           <Row gutter={8}>
             <Col span={12}>
-              {getFieldDecorator('captcha', {
-                rules: [{ required: true, message: 'Please check the captcha!' }],
-              })(
+              {getFieldDecorator('captcha')(
                 <Recaptcha
                 sitekey="6LcrSmUUAAAAAF6NBGQEBCSQOY7JrjBsP6Pd1EDI"
                 render="explicit"
                 onloadCallback={this.reCaptchaLoaded()}
+                verifyCallback = {this.verifyCallback()}
                 />
                 
               )}

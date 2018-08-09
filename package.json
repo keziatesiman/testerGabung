@@ -23,6 +23,8 @@
     "body-parser": "^1.18.3",
     "concurrently": "^3.5.1",
     "express": "^4.16.2",
+    "fs": "0.0.1-security",
+    "jsonfile": "^4.0.0",
     "mysql": "^2.15.0",
     "node-datetime": "^2.0.6",
     "randomstring": "^1.1.5",
