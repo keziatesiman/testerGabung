@@ -18,7 +18,7 @@ var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'sampleDB',
+    database: 'leantera_production_import',
     multipleStatements: true
 });
 
@@ -31,183 +31,6 @@ connection.connect(function(error) {
     }
 });
 
-
-app.get('/api/customers', (req, res) => {
-  const customers = [
-    {id: 1, firstName: 'John', lastName: 'Doe'},
-    {id: 2, firstName: 'Brad', lastName: 'Traversy'},
-    {id: 3, firstName: 'Mary', lastName: 'Swanson'},
-  ];
-
-  res.json(customers);
-});
-
-
-app.get('/name', function(req, resp) {
-    //about mysql
-    connection.query("SELECT * FROM mySampleTable", function(error, rows, fields){
-        //callback
-        if (!!error){
-            console.log('error in the query');
-        }
-        else {
-            console.log('successful query \n');
-            console.log(rows); 
-            //parse with your rows / fields
-            resp.send('Hello ', rows[0].Name);
-        }
-    });
-});
-
-//Get all employees
-app.get('/employees', (req, res) => {
-    connection.query('SELECT * FROM EmployeeDB', (err, rows, fields) => {
-        if (!err)
-            res.send(rows);
-        else
-            console.log(err);
-    })
-});
-
-//Get an employees
-app.get('/employees/:id', (req, res) => {
-    connection.query('SELECT * FROM EmployeeDB WHERE EmpID = ?', [req.params.id], (err, rows, fields) => {
-        if (!err)
-            res.send(rows);
-        else
-            console.log(err);
-    })
-});
-
-//Delete an employees
-app.delete('/employees/:id', (req, res) => {
-    connection.query('DELETE FROM EmployeeDB WHERE EmpID = ?', [req.params.id], (err, rows, fields) => {
-        if (!err)
-            res.send('Deleted successfully.');
-        else
-            console.log(err);
-    })
-});
-//Insert an employees
-app.post('/employees', (req, res) => {
-    let emp = req.body;
-    var sql = "SET @EmpID = ?;SET @Name = ?;SET @EmpCode = ?;SET @Salart = ?; \
-    CALL EmployeeAddOrEdit(@EmpID,@Name,@EmpCode,@Salart);";
-    connection.query(sql, [emp.EmpID, emp.Name, emp.EmpCode, emp.Salart], (err, rows, fields) => {
-        if (!err)
-            rows.forEach(element => {
-                if(element.constructor == Array)
-                res.send(`Inserted employee id : ${element[0].EmpID}`);
-            });
-        else
-            console.log(err);
-    })
-});
-//How to insert
-// {
-// 	"Username" : "Red",
-// 	"Password" : "12345678"
-// }
-
-
-//Update an employees
-app.put('/employees', (req, res) => {
-    let emp = req.body;
-    var sql = "SET @EmpID = ?;SET @Name = ?;SET @EmpCode = ?;SET @Salart = ?; \
-    CALL EmployeeAddOrEdit(@EmpID,@Name,@EmpCode,@Salart);";
-    connection.query(sql, [emp.EmpID, emp.Name, emp.EmpCode, emp.Salart], (err, rows, fields) => {
-        if (!err)
-            res.send('Updated successfully');
-        else
-            console.log(err);
-    })
-});
-
-
-
-
-
-//Get all data
-app.get('/register', (req, res) => {
-
-    connection.query('SELECT * FROM Authentication', (err, rows, fields) => {
-        if (!err)
-            res.send(rows);
-        else
-            console.log(err);
-    })
-});
-
-//Get an employees
-app.get('/register/:name', (req, res) => {
-    connection.query('SELECT * FROM Authentication WHERE Username = ?', [req.params.name], (err, rows, fields) => {
-        if (!err)
-            res.send(rows[0].Password);
-        else
-            console.log(err);
-    })
-});
-
-//Delete an username
-app.delete('/register/:name', (req, res) => {
-    connection.query('DELETE FROM Authentication WHERE Username = ?', [req.params.name], (err, rows, fields) => {
-        if (!err)
-            res.send('Deleted successfully.');
-        else
-            console.log(err);
-    })
-});
-
-//Insert an username
-app.post('/register', (req, res) => {
-    let emp = req.body;
-    var usern = emp.Username;
-    var passw = emp.Password;
-    var hashedPass = bcrypt.hashSync(passw, saltRounds); 
-    console.log("Username", usern);
-    console.log("Password", passw);
-    console.log("Hashed pass",hashedPass);
-
-    var sql = "INSERT INTO Authentication(Username, Password) \
-	VALUES (?, ?);";
-    connection.query(sql, [emp.Username, hashedPass], (err, rows, fields) => {
-        if (!err) 
-            res.send(rows);
-            // rows.forEach(element => {
-            //     if(element.constructor == Array)
-            //     res.send(rows);
-            // });
-        else
-            console.log("error \n");
-            console.log(err);
-    })
-});
-
-//Update an username
-app.put('/register', (req, res) => {
-    let emp = req.body;
-    var usern = emp.Username;
-    var passw = emp.Password;
-    var hashedPass = bcrypt.hashSync(passw, saltRounds); 
-    console.log("Username", usern);
-    console.log("Password", passw);
-    console.log("Hashed pass",hashedPass);
-
-    var sql = "UPDATE Authentication\
-    SET Password = ? \
-	WHERE Username = ?;";
-    connection.query(sql, [emp.hashedPass, emp.Username], (err, rows, fields) => {
-        if (!err) 
-            res.send(rows);
-            // rows.forEach(element => {
-            //     if(element.constructor == Array)
-            //     res.send(rows);
-            // });
-        else
-            console.log("error! \n");
-            console.log(err);
-    })
-});
 
 //Insert an username
 app.post('/signup', (req, res) => {
@@ -230,7 +53,7 @@ app.post('/signup', (req, res) => {
     console.log("Hashed pass ",hashedPass);
     console.log("date time: ", created_at);
 
-    var sql = "INSERT INTO user_data(id, username, password, name, phone, current_company, division, created_at) \
+    var sql = "INSERT INTO users(id, username, password, name, phone, current_company, division, created_at) \
 	VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
     connection.query(sql, [id, usern, hashedPass, name, phone, current_company, division, created_at], (err, rows, fields) => {
         if (!err) {
@@ -260,7 +83,7 @@ app.post('/signup', (req, res) => {
 
 //Get user and put all those data on json file 
 app.get('/user', (req, res) => {
-    connection.query('SELECT * FROM user_data', (err, rows, fields) => {
+    connection.query('SELECT * FROM users', (err, rows, fields) => {
         if (!err) {
             
 
@@ -305,7 +128,7 @@ app.post('/authenticate', (req, res) => {
     //hash the password
     var hashedPass = bcrypt.hashSync(password, saltRounds); 
     console.log("Hashed password: ",hashedPass);   
-    const sql = 'SELECT * FROM user_data WHERE username = ?'
+    const sql = 'SELECT * FROM users WHERE username = ?'
     connection.query(sql, [username], (err, result) => {
         if(result.length > 0) {
             // var hasil = bcrypt.compareSync(password, result[0].Password); 
@@ -320,7 +143,7 @@ app.post('/authenticate', (req, res) => {
                     var now = datetime.create();
                     var last_login = now.format('Y-m-d H:M:S');
                     
-                    var sqlUpdate = "UPDATE user_data SET last_login = ? WHERE username = ?";
+                    var sqlUpdate = "UPDATE users SET last_login = ? WHERE username = ?";
                     connection.query(sqlUpdate, [last_login, username] ,(err, result) => {
                         if (!err) {
                             console.log('updated last login at ', last_login);

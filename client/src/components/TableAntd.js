@@ -14,8 +14,16 @@ import { Table, Icon, Divider, Select } from 'antd';
     }
 
 
-    function handleChange(value) {
-    console.log(`selected ${value}`);
+    function handleChangeDivision(value) {
+    console.log(`selected division ${value}`);
+    }
+
+    function handleChangeCompany(value) {
+        console.log(`selected company ${value}`);
+    }
+
+    function handleChangeSupervisor(value) {
+    console.log(`selected supervisor ${value}`);
     }
 
     const columns = [{
@@ -32,16 +40,16 @@ import { Table, Icon, Divider, Select } from 'antd';
     title: 'Role',
     dataIndex: 'user_division',
     key: 'user_division',
-    render: text => (
+    render: (text, record) => (
         <span>
-        {text}
+        {text} `{record.user_username}`
         <br/>
         <Select
             mode="multiple"
             style={{ width: '80%' }}
             placeholder="Please select"
             defaultValue={['a10', 'c12']}
-            onChange={handleChange}
+            onChange={handleChangeDivision}
         >
             {children}
         </Select>
@@ -55,7 +63,7 @@ import { Table, Icon, Divider, Select } from 'antd';
         <span>
         {text}
         <br/>
-        <Select defaultValue="lucy" style={{ width: 120 }} onChange={handleChange}>
+        <Select defaultValue="lucy" style={{ width: 120 }} onChange={handleChangeCompany}>
             {children}
          </Select>   
         </span>
@@ -65,7 +73,7 @@ import { Table, Icon, Divider, Select } from 'antd';
     key: 'supervisor',
     render: () => (
         <span>
-        <Select defaultValue="lucy" style={{ width: 120 }} onChange={handleChange}>
+        <Select defaultValue="lucy" style={{ width: 120 }} onChange={handleChangeSupervisor}>
             <Option value="jack">Jack</Option>
             <Option value="lucy">Lucy</Option>
             <Option value="disabled">Disabled</Option>
@@ -80,11 +88,9 @@ import { Table, Icon, Divider, Select } from 'antd';
         <span>
         <a href="javascript:;">Action 一 {record.user_name}</a>
         <Divider type="vertical" />
-        <a href="javascript:;">Delete</a>
+        <a href="javascript:;">Accept</a>
         <Divider type="vertical" />
-        <a href="javascript:;" className="ant-dropdown-link">
-            More actions <Icon type="down" />
-        </a>
+        <a href="javascript:;">Reject</a>
         </span>
     ),
     }];
