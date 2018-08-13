@@ -18,7 +18,7 @@ var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'leantera_production_import',
+    database: 'sampledb',
     multipleStatements: true
 });
 
@@ -81,12 +81,86 @@ app.post('/signup', (req, res) => {
     })
 });
 
-//Get user and put all those data on json file 
-app.get('/user', (req, res) => {
-    connection.query('SELECT * FROM users', (err, rows, fields) => {
+//get role name
+app.get('/getroles', (req,res) => {
+    connection.query('SELECT id, role_name FROM roles', (err, rows, fields) => {
         if (!err) {
-            
+            var data_table = [];
+            for (var i in rows) {
+                var roles_id = rows[i].id; 
+                var roles_name = rows[i].role_name;
+                data_table.push({
+                    roles_id :roles_id,
+                    roles_name : roles_name 
+                })
+            }
+            res.send(data_table);
 
+        }
+        else {
+            console.log(err);
+        }
+    })
+});
+
+//get company name
+app.get('/getcompanies', (req,res) => {
+    connection.query('SELECT id, name FROM companies', (err, rows, fields) => {
+        if (!err) {
+            var data_table = [];
+            for (var i in rows) {
+                var company_id = rows[i].id; 
+                var company_name = rows[i].name;
+                data_table.push({
+                    company_id :company_id,
+                    company_name : company_name 
+                })
+            }
+            res.send(data_table);
+
+        }
+        else {
+            console.log(err);
+        }
+    })
+});
+
+//get supervisor name
+app.get('/getsupervisors', (req,res) => {
+    connection.query('SELECT id, name FROM users', (err, rows, fields) => {
+        if (!err) {
+            var data_table = [];
+            for (var i in rows) {
+                var supervisor_id = rows[i].id; 
+                var supervisor_name = rows[i].name;
+                data_table.push({
+                    supervisor_id :supervisor_id,
+                    supervisor_name : supervisor_name 
+                })
+            }
+            res.send(data_table);
+
+        }
+        else {
+            console.log(err);
+        }
+    })
+});
+
+//delete user if rejected
+app.delete('/deleteuser/:id', (req, res) => {
+    connection.query('DELETE FROM users WHERE id = ?', [req.params.id], (err, rows, fields) => {
+        if (!err)
+            res.send('Deleted successfully.');
+        else
+            console.log(err);
+    })
+});
+
+//Get user who are requesting and put all those data on json file 
+app.get('/user', (req, res) => {
+    connection.query('SELECT * FROM users WHERE is_active=0', (err, rows, fields) => {
+        if (!err) {
             var data_table = [];
 
             for (var i in rows) {

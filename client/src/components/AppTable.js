@@ -18,13 +18,6 @@ class AppTable extends React.Component {
 
 
   render() {
-    axios.get('/user')
-    .then(function (response) {
-      console.log(response);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });  
     return (
       <div
         className="page-container"

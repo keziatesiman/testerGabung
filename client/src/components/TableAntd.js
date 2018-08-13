@@ -4,26 +4,113 @@ import ReactDOM from 'react-dom';
 import 'antd/dist/antd.css';
 import data from './student-2.json'
 import axios from 'axios';
-import { Table, Icon, Divider, Select } from 'antd';
-
+import { Table, Icon, Divider, Select, Button } from 'antd';
 
     const Option = Select.Option;
     const children = [];
-    for (let i = 10; i < 36; i++) {
-    children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
+    axios.get('/getroles')
+          .then(function (response) {
+            //console.log(response.data.length);
+            for (let i=0; i<response.data.length; i++){
+                children.push(<Option key={response.data[i].roles_name}>{response.data[i].roles_name}</Option>);
+            }
+            
+          })
+          .catch(function (error) {
+            console.log(error);
+    }); 
+
+    const companiesData = [];
+    axios.get('/getcompanies')
+          .then(function (response) {
+            //console.log(response.data.length);
+            for (let i=0; i<response.data.length; i++){
+                companiesData.push(<Option key={response.data[i].company_name}>{response.data[i].company_name}</Option>);
+            }
+            
+          })
+          .catch(function (error) {
+            console.log(error);
+    }); 
+
+    const supervisorsData = [];
+    axios.get('/getsupervisors')
+          .then(function (response) {
+            //console.log(response.data.length);
+            for (let i=0; i<response.data.length; i++){
+                supervisorsData.push(<Option key={response.data[i].supervisor_name}>{response.data[i].supervisor_name}</Option>);
+            }
+            
+    })
+          .catch(function (error) {
+            console.log(error);
+    }); 
+
+    var datas = {};
+
+    function handleChangeDivision(record,e) {
+        console.log(`User selected : ${record.user_username} with Role : ${e}`);
+        var test = (datas.username_current != undefined);
+        console.log(test)
+        var username_current = record.user_username;
+        console.log(username_current)
+
+        if (datas[`${username_current}`] != undefined) {
+          datas[`${username_current}`].division = e;
+          console.log("division is updated");
+        }
+        else {
+
+          datas[`${username_current}`] = {division: e, company: "IBM", supervisor: ""}
+          console.log("data is created, division inserted");
+        }
+        console.log(datas);
     }
 
+    function handleChangeCompany(record,e) {
+      console.log(`User selected : ${record.user_username} with Company : ${e}`);
 
-    function handleChangeDivision(value) {
-    console.log(`selected division ${value}`);
+      var username_current = record.user_username;
+        if (datas[`${username_current}`] != undefined) {
+          datas[`${username_current}`].company = e;
+          console.log("company is updated");
+        }
+        else {
+
+          datas[`${username_current}`] = {division: "", company: e, supervisor: ""}
+          console.log("data is created, company inserted");
+        }
+
+        console.log(datas);
     }
 
-    function handleChangeCompany(value) {
-        console.log(`selected company ${value}`);
+    function handleChangeSupervisor(record,e) {
+      console.log(`User selected : ${record.user_username} with Supervisor : ${e}`);
+
+      var username_current = record.user_username;
+        if (datas[`${username_current}`] != undefined) {
+          datas[`${username_current}`].supervisor = e;
+          console.log("supervisor is updated");
+        }
+        else {
+
+          datas[`${username_current}`] = {division: "", company: "IBM", supervisor: e}
+          console.log("data is created, supervisor inserted");
+        }
+
+        console.log(datas);
     }
 
-    function handleChangeSupervisor(value) {
-    console.log(`selected supervisor ${value}`);
+    function handleReject(record){
+      console.log(`${record.user_username} is rejected`);
+      axios.get(`http://localhost:1338/deleteuser/${record.user_id}`)
+          .then(function (response) {
+            console.log(response);
+            console.log("deleted");
+          })
+          .catch(function (error) {
+            console.log(error);
+          });  
     }
 
     const columns = [{
@@ -36,6 +123,7 @@ import { Table, Icon, Divider, Select } from 'antd';
     title: 'Email',
     dataIndex: 'user_username',
     key: 'user_username',
+
     }, {
     title: 'Role',
     dataIndex: 'user_division',
@@ -48,8 +136,7 @@ import { Table, Icon, Divider, Select } from 'antd';
             mode="multiple"
             style={{ width: '80%' }}
             placeholder="Please select"
-            defaultValue={['a10', 'c12']}
-            onChange={handleChangeDivision}
+            onChange={(e) => handleChangeDivision(record, e)}
         >
             {children}
         </Select>
@@ -59,26 +146,23 @@ import { Table, Icon, Divider, Select } from 'antd';
     title: 'Company',
     dataIndex: 'user_current_company',
     key: 'user_current_company',
-    render: text => (
+    render: (text, record) => (
         <span>
         {text}
         <br/>
-        <Select defaultValue="lucy" style={{ width: 120 }} onChange={handleChangeCompany}>
-            {children}
+        <Select defaultValue="IBM" style={{ width: 120 }} onChange={(e) => handleChangeCompany(record, e)}>
+            {companiesData}
          </Select>   
         </span>
     )
     }, {
     title: 'Supervisor',
     key: 'supervisor',
-    render: () => (
+    render: (record) => (
         <span>
-        <Select defaultValue="lucy" style={{ width: 120 }} onChange={handleChangeSupervisor}>
-            <Option value="jack">Jack</Option>
-            <Option value="lucy">Lucy</Option>
-            <Option value="disabled">Disabled</Option>
-            <Option value="Yiminghe">yiminghe</Option>
-         </Select>   
+        <Select defaultValue="" style={{ width: 120 }} onChange={(e) => handleChangeSupervisor(record, e)}>
+        {supervisorsData}
+        </Select> 
         </span>
     )
     }, {
@@ -88,9 +172,9 @@ import { Table, Icon, Divider, Select } from 'antd';
         <span>
         <a href="javascript:;">Action 一 {record.user_name}</a>
         <Divider type="vertical" />
-        <a href="javascript:;">Accept</a>
+        <Button type="primary">Accept</Button>
         <Divider type="vertical" />
-        <a href="javascript:;">Reject</a>
+        <Button type="danger" onClick={() => handleReject(record)}>Reject</Button>
         </span>
     ),
     }];
@@ -100,8 +184,8 @@ import { Table, Icon, Divider, Select } from 'antd';
           super(props)
           this.state = {
             data: data,
-            
           }
+          // this.handleChangeDivision = this.handleChangeDivision.bind(this)
         }
       
       
