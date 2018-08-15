@@ -125,6 +125,32 @@ app.get('/getcompanies', (req,res) => {
     })
 });
 
+//get role id
+app.get('/getsupervisorid/:supervisor', (req,res) => {
+    connection.query('SELECT id FROM users WHERE name =?',[req.params.supervisor], (err, rows, fields) => {
+        if (!err) {
+            res.send(rows[0].id);
+
+        }
+        else {
+            console.log(err);
+        }
+    })
+});
+
+//get company id
+app.get('/getcompanyid/:company', (req,res) => {
+    connection.query('SELECT id FROM companies WHERE name =?',[req.params.company], (err, rows, fields) => {
+        if (!err) {
+            res.send(rows[0].id);
+
+        }
+        else {
+            console.log(err);
+        }
+    })
+});
+
 //get supervisor name
 app.get('/getsupervisors', (req,res) => {
     connection.query('SELECT id, name FROM users', (err, rows, fields) => {
@@ -148,13 +174,32 @@ app.get('/getsupervisors', (req,res) => {
 });
 
 //delete user if rejected
-app.delete('/deleteuser/:id', (req, res) => {
-    connection.query('DELETE FROM users WHERE id = ?', [req.params.id], (err, rows, fields) => {
+app.get('/deleteuser/:username', (req, res) => {
+    connection.query('DELETE FROM users WHERE username = ?', [req.params.username], (err, rows, fields) => {
         if (!err)
-            res.send('Deleted successfully.');
+            res.send(' Deleted successfully.');
         else
             console.log(err);
     })
+});
+
+//update user when accepted
+app.post('/updateuser', (req, res) => {
+    console.log(req.body)
+    var username = req.body.username;
+    var division = req.body.division;
+    var company_id = req.body.company_id;
+    var supervisor_id = req.body.supervisor_id;
+    connection.query('UPDATE users SET division= ?, company_id= ?, supervisor_id= ?, is_active=1 WHERE username = ?', [division, company_id, supervisor_id, username], (err, rows, fields) => {
+        if (!err) {
+            res.send(rows);
+            console.log("Success to update database\n");
+
+        }
+        else {
+            console.log(err);
+        }
+})
 });
 
 //Get user who are requesting and put all those data on json file 

@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import 'antd/dist/antd.css';
 import data from './student-2.json'
 import axios from 'axios';
-import { Table, Icon, Divider, Select, Button } from 'antd';
+import { Table, Icon, Divider, Select, Button, Popconfirm, message } from 'antd';
 
     const Option = Select.Option;
     const children = [];
@@ -103,14 +103,94 @@ import { Table, Icon, Divider, Select, Button } from 'antd';
 
     function handleReject(record){
       console.log(`${record.user_username} is rejected`);
-      axios.get(`http://localhost:1338/deleteuser/${record.user_id}`)
+
+      axios.get(`/deleteuser/${record.user_username}`)
           .then(function (response) {
             console.log(response);
             console.log("deleted");
+
           })
           .catch(function (error) {
             console.log(error);
           });  
+    }
+
+    function handleAccept(record) {
+      var username_current = record.user_username;
+      
+      if (datas[`${username_current}`] != undefined) {
+        var division = datas[record.user_username].division.toString();
+        var company = datas[record.user_username].company
+        var supervisor = datas[record.user_username].supervisor
+        var company_id = ""
+        var supervisor_id = ""
+
+
+        axios.get(`http://localhost:1338/getcompanyid/${company}`)
+          .then(function (response) {
+              console.log('company id : ',response.data);
+              company_id = response.data;
+
+              if (supervisor !== "") {
+              axios.get(`http://localhost:1338/getsupervisorid/${supervisor}`)
+                .then(function (response2) {
+                    console.log('supervisor id : ',response2.data);
+                    supervisor_id = response2.data;
+
+                    console.log(company_id, ' is company id and supervisor id is ', supervisor_id);
+
+                    axios.post('http://localhost:1338/updateuser', {
+                      username: username_current,
+                      division : division,
+                      company_id: company_id,
+                      supervisor_id: supervisor_id
+                    })
+                    .then(function (response) {
+                      alert("Success to insert data to database");
+                      console.log("Response is:");
+                      console.log(response);
+            
+                    })
+                    .catch(function (error) {
+                      console.log(error);
+                      alert("Error");
+                    });
+
+
+                  })
+                  .catch(function (error) {
+                    console.log(error);
+                });  
+              } 
+              else {
+                   
+                axios.post('http://localhost:1338/updateuser', {
+                      username: username_current,
+                      division : division,
+                      company_id: company_id,
+                      supervisor_id: ""
+                    })
+                    .then(function (response) {
+                      alert("Success to insert data to database");
+                      console.log("Response is:");
+                      console.log(response);
+            
+                    })
+                    .catch(function (error) {
+                      console.log(error);
+                      alert("Error");
+                    });
+
+              }
+              
+            })
+            .catch(function (error) {
+              console.log(error);
+          });
+        }
+      else {
+        alert("Please fill in the form");
+      }
     }
 
     const columns = [{
@@ -172,7 +252,7 @@ import { Table, Icon, Divider, Select, Button } from 'antd';
         <span>
         <a href="javascript:;">Action 一 {record.user_name}</a>
         <Divider type="vertical" />
-        <Button type="primary">Accept</Button>
+        <Button type="primary" onClick={() => handleAccept(record)}>Accept</Button>
         <Divider type="vertical" />
         <Button type="danger" onClick={() => handleReject(record)}>Reject</Button>
         </span>
